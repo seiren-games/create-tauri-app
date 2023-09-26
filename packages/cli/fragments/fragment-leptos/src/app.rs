@@ -27,12 +27,13 @@ pub fn App(cx: Scope) -> impl IntoView {
 
     let greet = move |ev: SubmitEvent| {
         ev.prevent_default();
+        let name = name.get();
         spawn_local(async move {
-            if name.get().is_empty() {
+            if name.is_empty() {
                 return;
             }
 
-            let args = to_value(&GreetArgs { name: &name.get() }).unwrap();
+            let args = to_value(&GreetArgs { name: &name }).unwrap();
             // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
             let new_msg = invoke("greet", args).await.as_string().unwrap();
             set_greet_msg.set(new_msg);
